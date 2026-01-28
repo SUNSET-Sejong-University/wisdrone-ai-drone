@@ -4,3 +4,5 @@ python-multipart
 requests
 opencv-python
 numpy
+cv2
+ultralytics

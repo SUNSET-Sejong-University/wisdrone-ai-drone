@@ -8,6 +8,8 @@ import time
 from core.config import IMAGE_DIR, HOST_IP, PORT
 from services.inference import run_inference
 from services.mobius import send_to_mobius
+from services.risk import compute_risk
+
 
 app = FastAPI()
 
@@ -42,27 +44,33 @@ async def analyze_snapshot(file: UploadFile = File(...)):
     image_url = f"http://{HOST_IP}:{PORT}/static/images/{filename}"
     print(f"📸 Image Saved: {image_url}")
     
-
-    '''
-    지금 만들어야할 ai추론
-    '''
-    # 4. AI 추론 (지금은 Mock)
+    # 4. AI 추론 (Mock)
     ai_result = run_inference(file_path)
-    
 
+    # 5. Risk 계산
+    risk_result = compute_risk(ai_result)
 
-    '''
-    그리고 추론결과 포맷도 정해야함
-    '''
-    # 5. Mobius 전송 데이터 구성
+    # 6. Mobius 전송 데이터 구성 (최종 Report)
     report_data = {
+        "timestamp": int(time.time()),
         "image_url": image_url,
-        "analysis": ai_result,
-        "timestamp": int(time.time())
+        "risk": {
+            "score": risk_result["risk_score"],
+            "level": risk_result["risk_level"]
+        },
+        "metrics": risk_result["metrics"],
+        "analysis": {
+            "person_count": ai_result["meta"]["person_count"]
+        }
     }
-    
-    # 6. Mobius로 전송 (비동기로 처리하거나 바로 보냄)
-    send_to_mobius(report_data)
+
+    # 7. Mobius 전송
+    if os.getenv("ENABLE_MOBIUS", "0") == "1":
+        send_to_mobius(report_data)
+
+    print("[LOCAL TEST REPORT]")
+    print(report_data)
+
     
     return {"status": "success", "data": report_data}
 
