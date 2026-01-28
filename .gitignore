@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+
+# Datasets
+#dataset/images/
+#dataset/labels/
+
+# YOLO outputs
+runs/
+
+# Model weights
+*.pt
+
+# Generated images
+static/images/*.jpg
+
+# OS
+.DS_Store
+Thumbs.db
