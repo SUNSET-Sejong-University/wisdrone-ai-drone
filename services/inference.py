@@ -1,10 +1,16 @@
+""" 
+이미지 1장을 입력으로 받아서
+→ YOLO로 사람을 검출하고
+→ 결과를 프로젝트 공통 포맷으로 반환
+"""
+
 import random
 import cv2
 import numpy as np
 from ultralytics import YOLO
 
 # YOLO 모델 로드 (서버 시작 시 1번만)
-model = YOLO("yolov5n.pt")
+model = YOLO("models/best.pt")
 
 # ============================
 # Mock Inference
@@ -22,7 +28,13 @@ def run_inference(image_path: str) -> dict:
 
     H, W, _ = img.shape
 
-    results = model(image_path, imgsz=416, conf=0.3)
+    results = model(
+    image_path,
+    imgsz=640,     # 터미널과 동일
+    conf=0.08,     # 
+    iou=0.7,
+    device="cpu"   # or cuda
+) 
 
     objects = []
 

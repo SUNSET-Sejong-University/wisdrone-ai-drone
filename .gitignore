@@ -5,16 +5,21 @@ __pycache__/
 # Datasets
 #dataset/images/
 #dataset/labels/
+dataset/crowd
 
 # YOLO outputs
 runs/
 
 # Model weights
 *.pt
+!best.pt
 
 # Generated images
-static/images/*.jpg
+static/
 
 # OS
 .DS_Store
 Thumbs.db
+
+
+dumi/
